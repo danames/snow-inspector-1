@@ -1,0 +1,152 @@
+{% extends "snow_inspector/base.html" %}
+
+{% load staticfiles %}
+
+{% load tethys_gizmos %}
+
+{% block global_scripts %}
+{{ block.super }}
+<script src="{% static 'snow_inspector/vendor/openlayers/v3.3.0/ol.js' %}" type="text/javascript"></script>
+{% endblock %}
+
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'snow_inspector/vendor/openlayers/v3.3.0/ol.css' %}" type="text/css" />
+<style>
+    .ol-mouse-position {
+        top: 10px;
+        right: 40px;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block app_navigation_items %}
+<form method="get" action="snow_graph/">
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#welcome-popup">Instructions</button>
+    <a class="btn btn-default" href="http://github.com/jirikadlec2/snow-inspector" target="_blank">More Info</a>
+    <br><br>
+    <li>
+        {% gizmo date_picker date_picker %}
+        {% gizmo text_input days_picker %}
+        <table>
+            <tr>
+                <td>{% gizmo text_input lat_picker %}</td>
+                <td width="10px"></td>
+                <td>{% gizmo text_input lon_picker %}</td>
+            </tr>
+        </table>
+    </li>
+
+    <input type='hidden' id='end' name='end'>
+    <input type='hidden' id='zoom' name='zoom'>
+    <input type='hidden' id='layer' name='layer'>
+    <input type="hidden" id="layer1" name="layer1">
+    <input type="hidden" id="level1" name="level">
+    <input type="hidden" id="zoom1" name="zoom1">
+
+    <input type="submit" id='getsnow' value="DISPLAY GRAPH" name='getsnow' class="btn btn-default">
+    </li>
+
+</form>
+{% endblock %}
+
+
+{% block app_content_wrapper_override %}
+<!-- Modal  -->
+<div class="modal fade" id="welcome-popup" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Welcome to MODIS Snow Inspector!</h4>
+            </div>
+            <div class="modal-body">
+                <div id="welcome-info">
+                    <ol>
+                        <h6>1. Select time period</h6>
+                        <p>Choose the date and the length of the time period in days.</p>
+                        <h6>2. Select point of interest</h6>
+                        <p>Click the map or enter coordinates to select the point of interest.</p>
+                        <h6>3. Get time series</h6>
+                        <p>Click the DISPLAY GRAPH button to show a time-series graph.</p>
+                        <h6>4. Download Results</h6>
+                        <p>
+                            Click the "Get WaterML" to save results as a WaterML file.
+                        </p>
+                        <h6>5. Upload to HydroShare</h6>
+                        <p>Click the "Upload to HydroShare" and fill out the metadata form.</p>
+                        <h9><br>
+We acknowledge the use of imagery provided by services from the <a href="https://earthdata.nasa.gov/about/science-system-description/eosdis-components/global-imagery-browse-services-gibs" target="_blank">
+                                NASA Global Imagery Browse Service (GIBS)</a>, operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS, <a href="https://earthdata.nasa.gov" target="_blank">https://earthdata.nasa.gov</a>) with funding provided by NASA/HQ.<br>
+                        </h9>
+                        <br><br>
+                        <div id="extra-buttons">
+                            <a class="btn btn-default" href="http://github.com/jirikadlec2/snow-inspector" target="_blank">More Info</a>
+                        </div>
+                    </ol>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="byu-logo-container">
+                    <span><i>Developed at the BYU Hydroinformatics Lab</i></span>
+                    <img src="{% static 'snow_inspector/images/byu-medallion.png' %}"/>
+                </div>
+                <button type="button" class="btn btn-default" id="close-popup" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
+{{block.super}}
+{% endblock %}
+
+
+{% block app_content %}
+
+<p>Click on the map to select location. Then click DISPLAY GRAPH to show data history.
+    <input type="button" id="btnShowPixels" name="btnShowPixels" value="Show Pixels" />
+    <!-- This is the original Show Modis Layer button, modified to accept different layers
+    <input type="button" id="btnShowModis" name="btnShowModis" value="Hide Modis Layer" /> -->
+    Select Layer:
+    <select id="selectLayer">
+        <option value="snowCover">Snow Cover</option>
+        <option value="snowMass">Snow Mass</option>
+        <option value="snowWaterEquivalent">Snow Water Equivalent</option>
+        <option value="none">None</option>
+    </select>
+    &nbsp;Base Map:
+    <select id="selectBaseMap">
+        <option value="esri">Esri</option>
+
+        <!-- MapQuest stopped offering free service. Not displaying the option anymore
+        <option value="mapquest">MapQuest</option>
+        End of changes. -->
+        <option value="bing">Bing</option>
+        <option value="osm">OpenStreetMap</option>
+    </select>
+</p>
+<div id="map_view_outer_container">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="map_wrapper">
+                <div id="map_view" style="width: 100%; position: relative;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- end outerContainer -->
+
+
+{% endblock %}
+
+{% block app_actions %}
+<a href="{% url 'snow_inspector:home' %}" class="btn btn-default">Back</a>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script src="{% static 'snow_inspector/js/map.js' %}"></script>
+{% endblock %}
