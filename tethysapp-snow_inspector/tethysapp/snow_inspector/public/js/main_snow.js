@@ -448,26 +448,28 @@ function get_pixel_color(layer, value) {
     } else if (layer == "AMSR2_Snow_Water_Equivalent") { //color and assign 0 if value is greater than 40
         //if "fill"
         if (value == 41) {
-            fillColor = '#f442b0'//pink
+            fillColor = '#f442b0';//pink
         }
         //if "land"
         else if (value == 42) {
-            fillColor = '#45f442' //green
+            fillColor = '#45f442'; //green
         }
         //if "ice"
         else if (value == 43) {
-            fillColor = '#42f4f1' //light blue
+            fillColor = '#42f4f1'; //light blue
         }
         //if "water"
         else if (value == 44) {
-            fillColor = '#4283f4' //blue
+            fillColor = '#4283f4'; //blue
         }
         //if "no data"
         else if ((value == 45)||(value ==46)) {
-            fillColor ='null' //black
+            fillColor ='#000000' //black
         } else {
-            fillColor = '#000'
+            fillColor = '#000';
         }
+    } else {
+        fillColor = '#000';
     }
     return fillColor;
 }
