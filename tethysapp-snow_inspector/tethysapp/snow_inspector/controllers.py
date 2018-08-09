@@ -43,8 +43,6 @@ def snow_graph(request):
         zoom1 = request.GET['zoom1']
         level1 = request.GET['level']
 
-        print layer, zoom1, level1
-
         # Make the waterml url query string
         waterml_url = '?start=%s&end=%s&lat=%s&lon=%s&layer=%s&level=%s&zoom=%s' % (startDate2, endDate, lat, lon, layer, zoom1, level1)
 

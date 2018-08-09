@@ -28,7 +28,7 @@
     <p></p>
 
     <div id="detail-map"></div>
-    <p>Estimated data value per cell</p>
+    <p>Grid shows an estimated value of each pixel of the snow layer in the surrounding area</p>
 
 {% endblock %}
 
@@ -40,6 +40,9 @@
               <option value="SMAP_L4_Snow_Mass">Snow Mass</option>
               <option value="AMSR2_Snow_Water_Equivalent">Snow Water Equivalent</option>
           </select>
+
+      <span>  Display Legend: <input type="checkbox" id="show_legend" style="vertical-align:text-bottom;" checked></span>
+
           <input type="hidden" id="originalLayer" name="originalLayer" value="{{layer1}}">
           <input type="hidden" id="y_max_value" name="y_max_value">
           <input type="hidden" id="level" name="level">
@@ -68,7 +71,7 @@
         margin-left: 3em;
     }
   </style>
-
+<div id="legends">
   <ul id="snow-cover-legend" style="display:none">
       <li style="color:null">Missing Data</li>
       <li style="color:#f4a742"><span style="color:#000">No Decision</span></li>
@@ -87,6 +90,7 @@
       <li style="color:#4283f4"><span style="color:#000">Water</span></li>
       <li style="color:#f442b0"><span style="color:#000">Fill</span></li>
   </ul>
+</div>
 
 {% endblock %}
 

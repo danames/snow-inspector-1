@@ -17,16 +17,32 @@
         top: 10px;
         right: 40px;
     }
+    .ol-mycontrol {
+        background-color:rgba(255,255,255,0.4);
+        border-radius: 4px;
+        padding: 2px;
+        position:absolute;
+        width: 300px;
+        top: 5px;
+        left: 40px;
+    }
 </style>
 {% endblock %}
 
-
+{% block header_buttons %}
+    <div class="header-button glyphicon-button" data-toggle="modal" data-placement="bottom" data-target="#welcome-popup" title="Instructions">
+        <a><span class="glyphicon glyphicon-question-sign"></span></a>
+    </div>
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"title="View Source Code">
+        <a href="https://github.com/FennaHD/snow-inspector.git" target="_blank"><span class="glyphicon glyphicon-info-sign"></span></a>
+    </div>
+{% endblock %}
 
 {% block app_navigation_items %}
 <form method="get" action="snow_graph/">
-    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#welcome-popup">Instructions</button>
-    <a class="btn btn-default" href="https://github.com/FennaHD/snow-inspector.git" target="_blank">More Info</a>
-    <br><br>
+    <!--<button type="button" class="btn btn-default" data-toggle="modal" data-target="#welcome-popup">Instructions</button>
+    <br>-->
+    <br>
     <li>
         {% gizmo date_picker date_picker %}
         {% gizmo text_input days_picker %}
@@ -52,7 +68,6 @@
 </form>
 {% endblock %}
 
-
 {% block app_content_wrapper_override %}
 <!-- Modal  -->
 <div class="modal fade" id="welcome-popup" role="dialog">
@@ -60,10 +75,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Welcome to MODIS Snow Inspector!</h4>
+                <h4 class="modal-title">Welcome to the Snow Inspector!</h4>
             </div>
             <div class="modal-body">
                 <div id="welcome-info">
+                    <h9>The purpose of this app is to provide the user with information regarding the snow coverage, snow mass and its water equivalent anywhere in the world. This includes a global map and a time series chart of such parameters in a location and its surrounding area.</h9>
                     <ol>
                         <h6>1. Select time period</h6>
                         <p>Choose the date and the length of the time period in days.</p>
@@ -79,6 +95,7 @@
                         <p>Click the "Upload to HydroShare" and fill out the metadata form.</p>
                         <h6><b>OR...</b></h6>
                         <p>Watch the <a href="https://www.youtube.com/watch?v=Ew8krANGb0E" target="_blank">Tutorial Video</a> online.</p>
+                        <iframe width="400" height="315" src="https://www.youtube.com/embed/Ew8krANGb0E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                         <h9><br>
 We acknowledge the use of imagery provided by services from the <a href="https://earthdata.nasa.gov/about/science-system-description/eosdis-components/global-imagery-browse-services-gibs" target="_blank">
                                 NASA Global Imagery Browse Service (GIBS)</a>, operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS, <a href="https://earthdata.nasa.gov" target="_blank">https://earthdata.nasa.gov</a>) with funding provided by NASA/HQ.<br>
@@ -92,7 +109,7 @@ We acknowledge the use of imagery provided by services from the <a href="https:/
             </div>
             <div class="modal-footer">
                 <div id="byu-logo-container">
-                    <span><i>Developed at the BYU Hydroinformatics Lab</i></span>
+                    <span style="font-size:14px"><i>Originally developed by Jiri Kadlec at the BYU Hydroinformatics Lab</i></span>
                     <img src="{% static 'snow_inspector/images/byu-medallion.png' %}"/>
                 </div>
                 <button type="button" class="btn btn-default" id="close-popup" data-dismiss="modal">Close</button>
@@ -121,13 +138,13 @@ We acknowledge the use of imagery provided by services from the <a href="https:/
     </select>
     &nbsp;Base Map:
     <select id="selectBaseMap">
+        <option value="osm">OpenStreetMap</option>
         <option value="esri">Esri</option>
 
         <!-- MapQuest stopped offering free service. Not displaying the option anymore
         <option value="mapquest">MapQuest</option>
         End of changes. -->
         <option value="bing">Bing</option>
-        <option value="osm">OpenStreetMap</option>
     </select>
 </p>
 <div id="map_view_outer_container">

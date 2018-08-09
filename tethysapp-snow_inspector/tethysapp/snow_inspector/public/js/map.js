@@ -1,7 +1,29 @@
 var popupDiv = $('#welcome-popup');
+window.app = {};
+var app = window.app;
 
 $(document).ready(function () {
 
+    //added custom control
+
+    app.CustomToolbarControl = function(){
+
+    var button1 = document.createElement('IMG');
+    button1.setAttribute('src', '{% static "snow_inspector/images/byu-medallion.png" %}');
+    //button1.innerHTML = 'some button';
+
+    var element = document.createElement('div');
+    element.className = 'ol-mycontrol';
+    element.appendChild(button1);
+
+    ol.control.Control.call(this, {
+        element: element
+    });
+
+    };
+
+    ol.inherits(app.CustomToolbarControl, ol.control.Control);
+    //end of custom control
 
 	var lat = 40.2380;
 	var lon = -111.5500;
@@ -72,16 +94,20 @@ $(document).ready(function () {
 	});
 
     //build OpenStreet map layer
+
+
     var openstreet_layer = new ol.layer.Tile({
           source: new ol.source.OSM(),
-          visibility: false
+          projection: ol.proj.get('EPSG:4326'),
+          tileSize: [512,512],
+          visibility: true
 	});
 
     //build MapQuest map layer
-    var mapQuest_layer = new ol.layer.Tile({
+    /*var mapQuest_layer = new ol.layer.Tile({
         source: new ol.source.MapQuest({layer: 'sat'}),
         visibility: false
-	});
+	}); */
 
     //build Esri map layer
     var esri_layer = new ol.layer.Tile({
@@ -90,14 +116,16 @@ $(document).ready(function () {
 			html: 'Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/' +
 			'rest/services/World_Topo_Map/MapServer>ArcGIS</a>'
 		})],
+		//projection: 'EPSG:4326',
 		url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
 		'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
 		})
 	});
-	baseMapLayer = esri_layer;
+	baseMapLayer = openstreet_layer;
 
 	//add geojson layer with tile outlines
 	function add_pixel_boundaries() {
+	    console.log("WAS ACTIVATED!!!");
 
 		var extent = map.getView().calculateExtent(map.getSize());
 
@@ -115,7 +143,7 @@ $(document).ready(function () {
 		console.log(pixel_url)
 
 		var pixel_source = new ol.source.GeoJSON({
-			projection : 'EPSG:3857',
+			projection : 'EPSG:4326',
 			url : pixel_url
 		});
 
@@ -250,12 +278,15 @@ $(document).ready(function () {
 	}
 
 	function createModisLayer() {
-
 		var modisDate = $("#endDate").val();
-		var modisUrl = "//map1.vis.earthdata.nasa.gov/wmts/epsg3857/best/" +
+		var modisUrl = "//map1{a-c}.vis.earthdata.nasa.gov/wmts/epsg4326/best/" +
 				"MODIS_Terra_NDSI_Snow_Cover/default/" + modisDate +
-				"/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png";
+				"500m"
+				//"/GoogleMapsCompatible_Level8/"
+				 + "{z}/{y}/{x}.png";
 		var modis = new ol.source.XYZ({
+		    projection: ol.proj.get('EPSG:4326'),
+		    tileSize: [512, 512],
 			url: modisUrl
 		});
 
@@ -269,11 +300,15 @@ $(document).ready(function () {
 		var modisDate1 = $("#endDate").val();
 		console.log(modisDate1);
 
-		var modisUrl1 = "//map1{a-c}.vis.earthdata.nasa.gov/wmts/epsg3857/best/" +
+		var modisUrl1 = "//map1{a-c}.vis.earthdata.nasa.gov/wmts/epsg4326/best/" +
 				$("#layer1").val() + "/default/" + modisDate1 +
-				"/GoogleMapsCompatible_Level" + $("#level1").val() + "/{z}/{y}/{x}.png"
+				"/500m"
+				//"/GoogleMapsCompatible_Level" + $("#level1").val()
+				+ "/{z}/{y}/{x}.png";
 		console.log(modisUrl1);
 		var modisSource = new ol.source.XYZ({
+		    projection: ol.proj.get('EPSG:4326'),
+		    tileSize:[512,512],
 			url: modisUrl1
 		});
 		modislayer.setSource(modisSource);
@@ -302,15 +337,19 @@ $(document).ready(function () {
 
 
 map = new ol.Map({
-	layers: [mapQuest_layer, bing_layer, openstreet_layer, esri_layer, modislayer],
-	controls: ol.control.defaults(),
+	layers: [/*mapQuest_layer, bing_layer, */openstreet_layer, /*esri_layer,*/ modislayer],
+	controls: ol.control.defaults().extend([new app.CustomToolbarControl()]),
 	target: document.getElementById('map_view'),
 	view: new ol.View({
-		center: [0, 0],
+	    projection: ol.proj.get('EPSG:4326'),
+	    tileSize: [512,512],
+		center: [0,0],
 		zoom: map_zoom
 	})
+
 });
 
+console.log(map_zoom);
 	// checking zoom end
 	map.getView().on('propertychange', function(e) {
 	   switch (e.key) {
@@ -364,9 +403,11 @@ function addPoint(coordinates){
 }
 
 function addPointLonLat(coordinates){
-	var coords = ol.proj.transform(coordinates, 'EPSG:4326','EPSG:3857');
+	var coords = coordinates;//ol.proj.transform(coordinates, 'EPSG:4326','EPSG:3857');
+	console.log(coords);
 	addPoint(coords);
 	map.getView().setCenter(coords);
+	console.log(coords);
 }
 
 function refreshDate(){
@@ -378,7 +419,7 @@ function refreshDate(){
 var coords = [lon, lat];
 console.log(coords);
 addPointLonLat(coords);
-
+console.log(coords);
 
 $("#inputDays").val($("#inputDays").attr("placeholder"));
 $("#inputLon").val(lon);
@@ -390,7 +431,8 @@ map.on('click', function(evt) {
 	addPoint(coordinate);
 	//now update lat and long in textbox
 
-	var lonlat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+	var lonlat = coordinate;//ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+	console.log(coordinate);
 	$("#inputLon").val(lonlat[0].toFixed(6));
 	$("#inputLat").val(lonlat[1].toFixed(6));
 	if (lonlat[0] < -180) {

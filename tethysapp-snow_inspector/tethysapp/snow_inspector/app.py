@@ -12,7 +12,9 @@ class SnowInspector(TethysAppBase):
     package = 'snow_inspector'
     root_url = 'snow-inspector'
     color = '#2c3e50'
-    description = 'Check snow parameters anywhere in the world.'
+    description = ('The Snow Inspector provides visual aid of a set of global snow layers '
+                   'and produces a time series chart of the selected snow parameter'
+                   ' anywhere in the world.')
     tags = ''
     enable_feedback = False
     feedback_emails = []
