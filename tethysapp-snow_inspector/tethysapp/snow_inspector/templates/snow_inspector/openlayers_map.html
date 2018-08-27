@@ -22,18 +22,17 @@
         border-radius: 4px;
         padding: 2px;
         position:absolute;
-        width: 300px;
-        top: 5px;
-        left: 40px;
+        bottom: 20px;
+        left: 20px;
     }
 </style>
 {% endblock %}
 
 {% block header_buttons %}
-    <div class="header-button glyphicon-button" data-toggle="modal" data-placement="bottom" data-target="#welcome-popup" title="Instructions">
-        <a><span class="glyphicon glyphicon-question-sign"></span></a>
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Instructions">
+        <a data-toggle="modal"  data-placement="bottom" data-target="#welcome-popup" title="Instructions" style="cursor:pointer;"><span class="glyphicon glyphicon-question-sign"></span></a>
     </div>
-    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"title="View Source Code">
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"title="Source Code">
         <a href="https://github.com/FennaHD/snow-inspector.git" target="_blank"><span class="glyphicon glyphicon-info-sign"></span></a>
     </div>
 {% endblock %}
@@ -62,6 +61,11 @@
     <input type="hidden" id="level1" name="level">
     <input type="hidden" id="zoom1" name="zoom1">
 
+    <input type="hidden" id="resolutions" name="resolutions">
+    <input type='hidden' id="matrix_set" name="matrix_set">
+    <input type="hidden" id="matrix_ids" name="matrix_ids">
+    <input type="hidden" id="tileSize" name="tileSize">
+
     <input type="submit" id='getsnow' value="DISPLAY GRAPH" name='getsnow' class="btn btn-default">
     </li>
 
@@ -79,28 +83,30 @@
             </div>
             <div class="modal-body">
                 <div id="welcome-info">
-                    <h9>The purpose of this app is to provide the user with information regarding the snow coverage, snow mass and its water equivalent anywhere in the world. This includes a global map and a time series chart of such parameters in a location and its surrounding area.</h9>
-                    <ol>
-                        <h6>1. Select time period</h6>
+                    <p>The purpose of this app is to provide the user with a visualization of data on different snow
+                        parameters such as snow coverage, mass, and its water equivalent anywhere in the world. This
+                        data is useful in reducing uncertainty in flooding and weather predictions.</p>
+                    <p style="font-size:20px; text-decoration:underline;">Steps</p>
+                    <ol style="padding-left:20px;">
+                        <p class="steps">1. Select time period</p>
                         <p>Choose the date and the length of the time period in days.</p>
-                        <h6>2. Select point of interest</h6>
+                        <p class="steps">2. Select layer</p>
+                        <p>Choose the snow parameter to acquire data for.</p>
+                        <p class="steps">3. Select point of interest</p>
                         <p>Click the map or enter coordinates to select the point of interest.</p>
-                        <h6>3. Get time series</h6>
+                        <p class="steps">4. Get time series</p>
                         <p>Click the DISPLAY GRAPH button to show a time-series graph.</p>
-                        <h6>4. Download Results</h6>
-                        <p>
-                            Click the "Get WaterML" to save results as a WaterML file.
-                        </p>
-                        <h6>5. Upload to HydroShare</h6>
+                        <p class="steps">5. Download Results</p>
+                        <p>Click the "Get WaterML" to save results as a WaterML file.</p>
+                        <p class="steps">6. Upload to HydroShare</p>
                         <p>Click the "Upload to HydroShare" and fill out the metadata form.</p>
-                        <h6><b>OR...</b></h6>
-                        <p>Watch the <a href="https://www.youtube.com/watch?v=Ew8krANGb0E" target="_blank">Tutorial Video</a> online.</p>
-                        <iframe width="400" height="315" src="https://www.youtube.com/embed/Ew8krANGb0E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                        <h9><br>
+                        <p style="font-size:16px;">Refer to the following video for more detailed instructions: </p>
+                        <iframe width="400" height="225" src="https://www.youtube.com/embed/Ew8krANGb0E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                        <h9><br><br>
 We acknowledge the use of imagery provided by services from the <a href="https://earthdata.nasa.gov/about/science-system-description/eosdis-components/global-imagery-browse-services-gibs" target="_blank">
                                 NASA Global Imagery Browse Service (GIBS)</a>, operated by the NASA/GSFC/Earth Science Data and Information System (ESDIS, <a href="https://earthdata.nasa.gov" target="_blank">https://earthdata.nasa.gov</a>) with funding provided by NASA/HQ.<br>
                         </h9>
-                        <br><br>
+                        <br>
                         <div id="extra-buttons">
                             <a class="btn btn-default" href="https://github.com/FennaHD/snow-inspector.git" target="_blank">More Info</a>
                         </div>
@@ -138,13 +144,13 @@ We acknowledge the use of imagery provided by services from the <a href="https:/
     </select>
     &nbsp;Base Map:
     <select id="selectBaseMap">
-        <option value="osm">OpenStreetMap</option>
         <option value="esri">Esri</option>
+        <option value="bing">Bing</option>
+        <option value="osm">OpenStreetMap</option>
 
         <!-- MapQuest stopped offering free service. Not displaying the option anymore
         <option value="mapquest">MapQuest</option>
         End of changes. -->
-        <option value="bing">Bing</option>
     </select>
 </p>
 <div id="map_view_outer_container">

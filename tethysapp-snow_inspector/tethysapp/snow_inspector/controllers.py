@@ -71,7 +71,6 @@ def getOAuthHS(request):
 
 
 def upload_to_hydroshare(request):
-
     print "running upload_to_hydroshare!"
     temp_dir = None
     try:
