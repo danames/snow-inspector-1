@@ -131,18 +131,18 @@ We acknowledge the use of imagery provided by services from the <a href="https:/
 
 {% block app_content %}
 
-<p>Click on the map to select location. Then click DISPLAY GRAPH to show data history.
+<p style="display:inline;">Click on the map to select location. Then click DISPLAY GRAPH to show data history.
     <input type="button" id="btnShowPixels" name="btnShowPixels" value="Show Pixels" />
     <!-- This is the original Show Modis Layer button, modified to accept different layers
     <input type="button" id="btnShowModis" name="btnShowModis" value="Hide Modis Layer" /> -->
     Select Layer:
-    <select id="selectLayer">
+    <select id="selectLayer" style="display:inline; text-align:left; cursor:pointer;">
         <option value="snowCover">Snow Cover</option>
         <option value="snowMass">Snow Mass</option>
         <option value="snowWaterEquivalent">Snow Water Equivalent</option>
         <option value="none">None</option>
     </select>
-    &nbsp;Base Map:
+    &nbsp; Base Map:
     <select id="selectBaseMap">
         <option value="esri">Esri</option>
         <option value="bing">Bing</option>

@@ -13,7 +13,9 @@ Taken from http://wiki.openstreetmap.org/wiki/Tilenames#Lon..2Flat._to_tile_numb
 
 
 def deg2num(lat_deg, lon_deg, zoom):
+    print zoom
     tileSize = 256
+    #zoom = 8
     lat_rad = math.radians(float(lat_deg))
     n = 2.0 ** zoom
     xtilef = (float(lon_deg) + 180.0) / 360.0 * n
@@ -24,6 +26,7 @@ def deg2num(lat_deg, lon_deg, zoom):
     ypixel = int((ytilef - float(ytile)) * tileSize)
 
     return (xtile, ytile, xpixel, ypixel)
+
 
 def getTileURL(xtile, ytile, date, zoom, layer, level):
     baseURL = 'http://map1.vis.earthdata.nasa.gov/wmts/epsg3857/best/' + \
@@ -37,20 +40,34 @@ def getTileURL(xtile, ytile, date, zoom, layer, level):
     #zoom = 8
     return baseURL.format(layer, time, tileMatrix, level, zoom, ytile, xtile)
 
+def getTileURL2(xtile, ytile, date, zoom, layer):
+    #need layer, time, tileMatrix, zoom, ytile, xtile
+    baseURL = 'http://map1.vis.earthdata.nasa.gov/wmts/epsg4326/best/' + \
+              '{0}/default/{1}/{2}/{3}/{4}/{5}.png'
+    if layer is None:
+        layer = 'MODIS_Terra_NDSI_Snow_Cover'
+    time = date.strftime("%Y-%m-%d")
+    tileMatrix = '500m'
+    return baseURL.format(layer, time, tileMatrix, zoom, ytile, xtile)
 
-def getTileURLTemplate(xtile, ytile, zoom, layer, level):
-    baseURL = 'http://map1.vis.earthdata.nasa.gov/wmts/epsg3857/best/' + \
-              '{0}/default/{1}/{2}{3}/{4}/{5}/{6}.png'
+
+
+def getTileURLTemplate(xtile, ytile, zoom, layer):
+    #I need the tileMatrix, correct zoom, xtile and ytile
+    baseURL = 'http://map1.vis.earthdata.nasa.gov/wmts/epsg4326/best/' + \
+              '{0}/default/{1}/{2}/{3}/{4}/{5}.png'
     #layer = 'MODIS_Terra_NDSI_Snow_Cover'
-    tileMatrix = 'GoogleMapsCompatible_Level'
+    #tileMatrix = 'GoogleMapsCompatible_Level'
+    tileMatrix = '500m'
     time = 'DATE_PLACEHOLDER'
-    return baseURL.format(layer, time, tileMatrix, level, zoom, ytile, xtile)
+    #zoom = 7
+    return baseURL.format(layer, time, tileMatrix, zoom, ytile, xtile)
 
 
 def getTimeSeries(lat, lon, beginDate, endDate, zoom, layer=None, level=None):
     nDays = (endDate - beginDate).days
     datelist = [beginDate + datetime.timedelta(days=x) for x in range(0, nDays)]
-    #zoom = 8
+    #zoom = 7
     xtile, ytile, xpixel, ypixel = deg2num(lat, lon, zoom)
     ts = []
     for d in datelist:
@@ -58,6 +75,7 @@ def getTimeSeries(lat, lon, beginDate, endDate, zoom, layer=None, level=None):
         pixel_val = getImage(url, ypixel, xpixel)
         snow_val = pixelValueToSnowPercent(pixel_val, layer)
         ts.append(snow_val)
+    print ts
     return ts
 
 
@@ -116,7 +134,7 @@ def pixelSnowVal(pixel_val, layer_name):
         if pixel_val > 40:
             snow_val = 0
         else:
-            snow_val = pixel_val
+            snow_val = 2 * pixel_val
 
     return (math.floor(snow_val * 10) / 10) #makes value a float with one decimal (brought down, not approximated)
 
@@ -262,10 +280,11 @@ def get_data_json(request):
 
     context = {'lat': lat, 'lon': lon, 'startdate': start, 'enddate': end}
     # pass url of tile to output
-    #zoom = 8
+    #zoom = 7
     zoom = int(zoom)
+
     xtile, ytile, xpixel, ypixel = deg2num(lat, lon, zoom)
-    tile = getTileURLTemplate(xtile, ytile, zoom, layer, level)
+    tile = getTileURLTemplate(xtile, ytile, zoom, layer)
 
     ts = getTimeSeries(lat, lon, startdate, enddate, zoom, layer, level)
     return JsonResponse({"query": context, "tile": tile, "xpixel": xpixel, "ypixel": ypixel, "data": ts})

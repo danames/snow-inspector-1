@@ -59,24 +59,26 @@ $("#show_legend").click(function(e) {
         else {$("#show_legend").prop('checked', false);}
         alert("Please allow the procedure to finish in order to prevent bugs and graph erros");
     } else {
-        if (checked == false) {
-            $("#legends").hide();
-            $("#legends_missing").show();
-            chart.series[0].hide();
-            chart.series[1].show();
-        }
-
+        if ($("#selectedGraph").val() == "SMAP_L4_Snow_Mass"){}
         else {
-            $("#legends").show();
-            $("#legends_missing").hide();
-            chart.series[0].show();
-            chart.series[1].hide();
+            if (checked == false) {
+                $("#legends").hide();
+                $("#legends_missing").show();
+                chart.series[0].hide();
+                chart.series[1].show();
+            }
+
+            else {
+                $("#legends").show();
+                $("#legends_missing").hide();
+                chart.series[0].show();
+                chart.series[1].hide();
+            }
         }
     }
 });
 
 function add_data_to_chart_colors(layer, response_data, myChart, iRequest) {
-    console.log("ACTIVATE THE CHANGE OF COLORS");
     for (var i = 0; i < response_data.data.length; i++){
         //color and assign 0 to values over 100 corresponding to the error classification
         if (layer == "MODIS_Terra_NDSI_Snow_Cover"){
@@ -116,7 +118,7 @@ function add_data_to_chart_colors(layer, response_data, myChart, iRequest) {
             else if (response_data.data[i] == 105) {
                 myChart.series[0].data[i + (iRequest * 15)].update({
                     marker:{
-                        fillColor: '#4283f4'//blue
+                        fillColor: '#fcff33'//yellow
                     }
                 });
             }
@@ -178,7 +180,7 @@ function add_data_to_chart_colors(layer, response_data, myChart, iRequest) {
             else if (response_data.data[i] == 44) {
                 myChart.series[0].data[i + (iRequest * 15)].update({
                     marker:{
-                        fillColor: '#4283f4' //blue
+                        fillColor: '#fcff33' //yellow
                     }
                 });
             }
@@ -228,6 +230,7 @@ function add_data_to_chart2(response_data, myChart, iRequest, layer) {
 }
 
 function set_chart_tooltip(myChart, tile_url, xpixel, ypixel, layer) {
+    console.log(tile_url);
     var array = tooltip_units(layer);
     var parameter = array[0], unit = array[1];
 	myChart.tooltip.options.formatter = function() {
@@ -315,10 +318,10 @@ function update_chart(lat, lon, begin, end, zoom, layer, level, seriesOriginalVa
 
                     if (response_tile.includes(layer)) {
 
-                        if (iRequest === 0) {
+                        /*if (iRequest === 0) {
                             set_chart_tooltip(chart, response_data.tile,
                                                   response_data.xpixel,response_data.ypixel, layer);
-                        }
+                        }*/
 
                         add_data_to_chart2(response_data, chart, iRequest, layer);
 
@@ -394,15 +397,15 @@ function add_snow_pixels_to_map(map, map_date, zoom, layer, level) {
 
 	var pixel_url = baseurl + '?layer=' + layer + '&level=' + level + '&zoom=' + zoom + '&lonmin=' + xmin + '&latmin=' + ymin + '&lonmax=' + xmax + '&latmax=' + ymax + '&date=' + map_date;
 
-    var pixel_source = new ol.source.Vector({
+    /*var pixel_source = new ol.source.Vector({
         url: pixel_url,
         format: new ol.format.GeoJSON()
-    });
+    });*/
 
-	/*var pixel_source = new ol.source.GeoJSON({
+	var pixel_source = new ol.source.GeoJSON({
 		projection : 'EPSG:3857',
 		url : pixel_url
-	});*/
+	});
 
 	if (typeof pixelBoundaries === 'undefined') {
 		pixelBoundaries = new ol.layer.Vector({
@@ -410,6 +413,8 @@ function add_snow_pixels_to_map(map, map_date, zoom, layer, level) {
 			style : function(feature, resolution) {
 
 				var text = feature.get('val');
+				console.log(typeof text + "AAAAAAA" + text );
+				console.log(layer);
 				var pixel_color = get_pixel_color(layer, text);
 				var pixel_value = get_pixel_value(layer, text);
 
@@ -429,14 +434,13 @@ function add_snow_pixels_to_map(map, map_date, zoom, layer, level) {
 								color : pixel_color//'#000'
 							}),
 							stroke : new ol.style.Stroke({
-								color : '#fff',
-								width : 3
+								color : '#7f7f7f',
+								width : 2
 							})
 						}),
 						zIndex : 999
 					})];
 				}
-				console.log(styleCache[text]);
 				return styleCache[text]
 			}
 		});
@@ -490,7 +494,7 @@ function get_pixel_color(layer, value) {
         }
         //if "ocean"
         else if (value == 105) {
-            fillColor = '#4283f4';//blue
+            fillColor = '#fcff33';//yellow
         }
         //if "cloud"
         else if (value == 106) {
@@ -505,7 +509,7 @@ function get_pixel_color(layer, value) {
             fillColor = '#f442b0' //pink
         }
         else if (value < 100) {
-            fillColor = '#000';
+            fillColor = '#4283f4';
         }
     } else if (layer == "AMSR2_Snow_Water_Equivalent") { //color and assign 0 if value is greater than 40
         //if "fill"
@@ -522,16 +526,16 @@ function get_pixel_color(layer, value) {
         }
         //if "water"
         else if (value == 44) {
-            fillColor = '#4283f4'; //blue
+            fillColor = '#fcff33'; //yellow
         }
         //if "no data"
         else if ((value == 45)||(value ==46)) {
             fillColor ='#000000' //black
         } else {
-            fillColor = '#000';
+            fillColor = '#4283f4';
         }
     } else {
-        fillColor = '#000';
+        fillColor = '#4283f4';
     }
     return fillColor;
 }
@@ -608,8 +612,17 @@ $("#selectedGraph").change(function(e) {
             chart.setTitle({text: 'Snow Coverage' + ' at: ' + lat + 'N ' + lon + 'E'});
             $("#level").val("8");
             $("#zoom").val(8);
-            $("#snow-cover-legend").show();
-            $("#snow-water-equivalent-legend").hide();
+            if ($("#show_legend").prop('checked')) {
+                $("#snow-cover-legend").show();
+                $("#snow-water-equivalent-legend").hide();
+                chart.series[0].show();
+                chart.series[1].hide();
+            } else {
+                $("#legends").hide();
+                $("#legends_missing").shows();
+                chart.series[0].hide();
+                chart.series[1].show();
+            }
         } else if (graph_selected == "SMAP_L4_Snow_Mass") {
             chart.yAxis[0].update({
                 title: {
@@ -620,8 +633,15 @@ $("#selectedGraph").change(function(e) {
             chart.setTitle({text: 'Snow Mass' + ' at: ' + lat + 'N ' + lon + 'E'});
             $("#level").val("6");
             $("#zoom").val(6);
+            $("#legends_missing").show();
             $("#snow-cover-legend").hide();
-            $("#snow-water-equivalent-legend").hide();
+            if ($("#show_legend").prop('checked')) {
+                chart.series[0].show();
+                chart.series[1].hide();
+            } else {
+                chart.series[0].hide();
+                chart.series[1].show();
+            }
         } else if (graph_selected == "AMSR2_Snow_Water_Equivalent") {
             chart.yAxis[0].update({
                 title: {
@@ -632,8 +652,17 @@ $("#selectedGraph").change(function(e) {
             chart.setTitle({text: 'Snow Water Equivalent' + ' at: ' + lat + 'N ' + lon + 'E'});
             $("#level").val("6");
             $("#zoom").val(6);
-            $("#snow-cover-legend").hide();
-            $("#snow-water-equivalent-legend").show();
+            if ($("#show_legend").prop('checked')) {
+                $("#snow-cover-legend").hide();
+                $("#snow-water-equivalent-legend").show();
+                chart.series[0].show();
+                chart.series[1].hide();
+            } else {
+                $("#legends_missing").show();
+                $("#legends").hide();
+                chart.series[0].hide();
+                chart.series[1].show();
+            }
         }
         var lat = $("#lat").text();
         var lon = $("#lon").text();
@@ -642,6 +671,7 @@ $("#selectedGraph").change(function(e) {
         layer_level = $("#level").val();
         zoom = $("#zoom").val();
         chart.series[0].setData([]);
+        chart.series[1].setData([]);
         update_chart(lat, lon, begin_date, end_date, zoom, graph_selected, layer_level);
         $("#last_value").val(graph_selected);
     }
@@ -665,7 +695,7 @@ function assign_parameters (layer) {
     } else if (layer == "AMSR2_Snow_Water_Equivalent") {
         level = "6";
         zoom = 6;
-        y_max_value = 40.0;
+        y_max_value = 80.0;
         y_axis_text = "Snow Water Equivalent (mm)";
         title_text = "Snow Water Equivalent"
     }
@@ -680,6 +710,7 @@ function initiate_legend (layer) {
     } else if (layer == "SMAP_L4_Snow_Mass") {
         $("#snow-cover-legend").hide();
         $("#snow-water-equivalent-legend").hide();
+        $("#legends_missing").show();
     } else if (layer == "AMSR2_Snow_Water_Equivalent") {
         $("#snow-cover-legend").hide();
         $("#snow-water-equivalent-legend").show();
@@ -777,7 +808,7 @@ $(document).ready(function () {
 			enabled: false,
 		},
         tooltip: {
-            useHTML: true
+            useHTML: false
         },
 		plotOptions: {
 			series: {
@@ -821,11 +852,11 @@ $(document).ready(function () {
 				threshold: null
 			}
 		},
-		series: [{},{}]
+		series: [{"marker":{"symbol":"circle"}},{"marker":{"symbol":"circle"}}]
 	};
 
 	chart_options.series[0].type = 'line';
-	chart_options.series[0].name = 'Snow Coverage';
+	chart_options.series[0].name = 'Data Value';
 	chart = new Highcharts.Chart(chart_options);
 
 	//setup some default values
