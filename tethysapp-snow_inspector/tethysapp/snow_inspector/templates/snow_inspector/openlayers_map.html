@@ -66,8 +66,7 @@
     <input type="hidden" id="matrix_ids" name="matrix_ids">
     <input type="hidden" id="tileSize" name="tileSize">
 
-    <input type="submit" id='getsnow' value="DISPLAY GRAPH" name='getsnow' class="btn btn-default">
-    </li>
+    <input type="submit" id='getsnow' value="Retrieve Snow Data" name='getsnow' class="btn btn-default">
 
 </form>
 {% endblock %}
@@ -95,7 +94,7 @@
                         <p class="steps">3. Select point of interest</p>
                         <p>Click the map or enter coordinates to select the point of interest.</p>
                         <p class="steps">4. Get time series</p>
-                        <p>Click the DISPLAY GRAPH button to show a time-series graph.</p>
+                        <p>Click the "Retrieve Snow Data" button to show a time-series graph.</p>
                         <p class="steps">5. Download Results</p>
                         <p>Click the "Get WaterML" to save results as a WaterML file.</p>
                         <p class="steps">6. Upload to HydroShare</p>
@@ -108,7 +107,7 @@ We acknowledge the use of imagery provided by services from the <a href="https:/
                         </h9>
                         <br>
                         <div id="extra-buttons">
-                            <a class="btn btn-default" href="https://github.com/FennaHD/snow-inspector.git" target="_blank">More Info</a>
+                            <a class="btn btn-default" href="https://github.com/FennaHD/snow-inspector.git" target="_blank">Source Code</a>
                         </div>
                     </ol>
                 </div>
@@ -131,7 +130,8 @@ We acknowledge the use of imagery provided by services from the <a href="https:/
 
 {% block app_content %}
 
-<p style="display:inline;">Click on the map to select location. Then click DISPLAY GRAPH to show data history.
+<p style="display:inline;">Click on the map to select location. Then click on the "Retrieve Snow Data" button
+    to show data history.
     <input type="button" id="btnShowPixels" name="btnShowPixels" value="Show Pixels" />
     <!-- This is the original Show Modis Layer button, modified to accept different layers
     <input type="button" id="btnShowModis" name="btnShowModis" value="Hide Modis Layer" /> -->
@@ -167,8 +167,11 @@ We acknowledge the use of imagery provided by services from the <a href="https:/
 
 {% endblock %}
 
+{% block app_actions_override %}
+{% endblock %}
+
 {% block app_actions %}
-<a href="{% url 'snow_inspector:home' %}" class="btn btn-default">Back</a>
+<!--<a href="{% url 'snow_inspector:home' %}" class="btn btn-default">Back</a>-->
 {% endblock %}
 
 {% block scripts %}

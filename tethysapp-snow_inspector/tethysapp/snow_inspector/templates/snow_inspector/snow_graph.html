@@ -23,14 +23,15 @@
         <a href="{% url 'snow_inspector:home' %}{{map_url}}">Change Snow Location</a>
         </button>
     </li> -->
-
+    <br>
     <a class="btn btn-default" href="{% url 'snow_inspector:home' %}{{map_url}}">Change Dates, Location & Layer</a>
 <!-- End of changes -->
 
     <p></p>
 
     <div id="detail-map"></div>
-    <p>Grid shows an estimated value of each pixel of the snow layer in the surrounding area</p>
+    <p>This grid shows an estimated value of each pixel of the snow layer in the surrounding area.
+    Hover over points in the time series plot to change this grid.</p>
 
 {% endblock %}
 

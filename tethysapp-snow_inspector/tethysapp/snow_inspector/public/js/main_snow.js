@@ -428,13 +428,13 @@ function add_snow_pixels_to_map(map, map_date, zoom, layer, level) {
 							width : 1
 						}),
 						text : new ol.style.Text({
-							font : '12px sans-serif',
+							font : '20px sans-serif',
 							text : pixel_value,
 							fill : new ol.style.Fill({
 								color : pixel_color//'#000'
 							}),
 							stroke : new ol.style.Stroke({
-								color : '#7f7f7f',
+								color : '#000000',
 								width : 2
 							})
 						}),
