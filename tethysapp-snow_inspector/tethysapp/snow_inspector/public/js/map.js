@@ -153,7 +153,7 @@ $(document).ready(function () {
 							}),
 							stroke : new ol.style.Stroke({
 								color : '#319FD3',
-								width : 1
+								width : 100
 							}),
 							text : new ol.style.Text({
 								font : '12px sans-serif',

@@ -11,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf import settings
+from tethys_services.backends.hs_restclient_helper import get_oauth_hs
 
 
 hs_hostname = "www.hydroshare.org"
@@ -55,21 +56,6 @@ def snow_graph(request):
     return render(request, 'snow_inspector/snow_graph.html', context)
 
 
-def getOAuthHS(request):
-
-    client_id = getattr(settings, "SOCIAL_AUTH_HYDROSHARE_KEY", "None")
-    print client_id
-    client_secret = getattr(settings, "SOCIAL_AUTH_HYDROSHARE_SECRET", "None")
-    print client_secret
-
-    # this line will throw out from django.core.exceptions.ObjectDoesNotExist if current user is not signed in via HydroShare OAuth
-    token = request.user.social_auth.get(provider='hydroshare').extra_data['token_dict']
-    auth = HydroShareAuthOAuth2(client_id, client_secret, token=token)
-    hs = HydroShare(auth=auth, hostname=hs_hostname)
-
-    return hs
-
-
 def upload_to_hydroshare(request):
     print "running upload_to_hydroshare!"
     temp_dir = None
@@ -85,10 +71,12 @@ def upload_to_hydroshare(request):
             r_title = request.GET['title']
             r_abstract = request.GET['abstract']
             r_keywords_raw = request.GET['keywords']
-            r_type = 'GenericResource'
+            r_type = 'CompositeResource'
             r_keywords = r_keywords_raw.split(',')
 
-            hs = getOAuthHS(request)
+            #hs = getOAuthHS(request)
+
+            hs = get_oauth_hs(request)
 
             # download the kml file to a temp directory
             temp_dir = tempfile.mkdtemp()
@@ -112,7 +100,7 @@ def upload_to_hydroshare(request):
     except ObjectDoesNotExist as e:
         print ("1231")
         print str(e)
-        return_json['error'] = 'Login timed out! Please re-sign in with your HydroShare account.'
+        return_json['error'] = 'Object doesn"t exist: Login timed out! Please re-sign in with your HydroShare account.'
     except TokenExpiredError as e:
         print str(e)
         return_json['error'] = 'Login timed out! Please re-sign in with your HydroShare account.'
