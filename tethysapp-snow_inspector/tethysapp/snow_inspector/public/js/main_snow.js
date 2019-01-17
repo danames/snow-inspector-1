@@ -317,12 +317,8 @@ function update_chart(lat, lon, begin, end, zoom, layer, level, seriesOriginalVa
                     var response_tile = response_data.tile;
 
                     if (response_tile.includes(layer)) {
-
-                        /*if (iRequest === 0) {
-                            set_chart_tooltip(chart, response_data.tile,
-                                                  response_data.xpixel,response_data.ypixel, layer);
-                        }*/
-
+                        console.log(response_data);
+                        console.log(response_tile);
                         add_data_to_chart2(response_data, chart, iRequest, layer);
 
                         iRequest++;
@@ -396,7 +392,7 @@ function add_snow_pixels_to_map(map, map_date, zoom, layer, level) {
 	var baseurl = '/apps/snow-inspector/pixel-borders/';
 
 	var pixel_url = baseurl + '?layer=' + layer + '&level=' + level + '&zoom=' + zoom + '&lonmin=' + xmin + '&latmin=' + ymin + '&lonmax=' + xmax + '&latmax=' + ymax + '&date=' + map_date;
-
+    console.log(pixel_url);
     /*var pixel_source = new ol.source.Vector({
         url: pixel_url,
         format: new ol.format.GeoJSON()
@@ -576,10 +572,6 @@ function make_base_layer() {
 	if (layerName == 'esri') {
 		var esri_layer = new ol.layer.Tile({
 			source: new ol.source.XYZ({
-				attribution: [new ol.Attribution({
-					html: 'Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/' +
-					'rest/services/World_Topo_Map/MapServer>ArcGIS</a>'
-				})],
 				url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
 				'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
 			})
