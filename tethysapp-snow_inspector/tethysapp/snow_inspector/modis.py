@@ -1,7 +1,7 @@
 import math
 import datetime
 import png
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from django.http import JsonResponse
 from django.shortcuts import render_to_response
@@ -13,7 +13,6 @@ Taken from http://wiki.openstreetmap.org/wiki/Tilenames#Lon..2Flat._to_tile_numb
 
 
 def deg2num(lat_deg, lon_deg, zoom):
-    print zoom
     tileSize = 256
     #zoom = 8
     lat_rad = math.radians(float(lat_deg))
@@ -75,7 +74,7 @@ def getTimeSeries(lat, lon, beginDate, endDate, zoom, layer=None, level=None):
         pixel_val = getImage(url, ypixel, xpixel)
         snow_val = pixelValueToSnowPercent(pixel_val, layer)
         ts.append(snow_val)
-    print ts
+    print(ts)
     return ts
 
 
@@ -158,8 +157,8 @@ def tileBoundsLonLat(x, y, zoom):
 
 
 def getImage(url, rowpixel, colpixel):
-    print url
-    r = png.Reader(file=urllib2.urlopen(url))
+    print(url)
+    r = png.Reader(file=urllib.request.urlopen(url))
     w, h, pixels, metadata = r.read()
     pxlist = list(pixels)
     v = pxlist[rowpixel][colpixel]
@@ -167,7 +166,7 @@ def getImage(url, rowpixel, colpixel):
 
 
 def getImageVals(url):
-    r = png.Reader(file=urllib2.urlopen(url))
+    r = png.Reader(file=urllib.request.urlopen(url))
     w, h, pixels, metadata = r.read()
     pxlist = list(pixels)
     return pxlist

@@ -15,12 +15,12 @@ def map(request):
                              format='yyyy-mm-dd',
                              start_date='2013-01-01',
                              today_button=True,
-                             initial=datetime.datetime.today().strftime("%Y-%m-%d")
+                             initial=(datetime.datetime.today()-datetime.timedelta(days=4)).strftime("%Y-%m-%d")
                              )
 
     days_picker = {'display_text': 'Number of days:',
                    'name': 'inputDays',
-                   'placeholder': '100'}
+                   'placeholder': '30'}
 
     # Pre-populate lat-picker and lon_picker from model
     lat_picker = {'display_text': 'Latitude:',

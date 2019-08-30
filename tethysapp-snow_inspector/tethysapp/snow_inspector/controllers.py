@@ -57,7 +57,7 @@ def snow_graph(request):
 
 
 def upload_to_hydroshare(request):
-    print "running upload_to_hydroshare!"
+    print("running upload_to_hydroshare!")
     temp_dir = None
     try:
         return_json = {}
@@ -66,7 +66,7 @@ def upload_to_hydroshare(request):
 
             base_url = request.build_absolute_uri()
             waterml_url = base_url.replace('upload-to-hydroshare', 'waterml')
-            print waterml_url
+            print(waterml_url)
 
             r_title = request.GET['title']
             r_abstract = request.GET['abstract']
@@ -82,7 +82,7 @@ def upload_to_hydroshare(request):
             temp_dir = tempfile.mkdtemp()
 
             waterml_file_path = os.path.join(temp_dir, "snow.wml")
-            print waterml_file_path
+            print(waterml_file_path)
 
             with open(waterml_file_path, 'w') as f:
                 resp = requests.get(waterml_url, verify=False)
@@ -98,13 +98,12 @@ def upload_to_hydroshare(request):
                 raise
 
     except ObjectDoesNotExist as e:
-        print ("1231")
-        print str(e)
+        print(str(e))
         return_json['error'] = 'Object doesn"t exist: Login timed out! Please re-sign in with your HydroShare account.'
     except TokenExpiredError as e:
-        print str(e)
+        print(str(e))
         return_json['error'] = 'Login timed out! Please re-sign in with your HydroShare account.'
-    except Exception, err:
+    except Exception as err:
         if "401 Unauthorized" in str(err):
             return_json['error'] = 'Username or password invalid.'
         elif "400 Bad Request" in str(err):
@@ -116,5 +115,5 @@ def upload_to_hydroshare(request):
         if temp_dir != None:
             if os.path.exists(temp_dir):
                 shutil.rmtree(temp_dir)
-        print return_json
+        print(return_json)
     return JsonResponse(return_json)

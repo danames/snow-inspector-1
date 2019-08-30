@@ -10,7 +10,7 @@ Requires: pyPNG
 import math
 import datetime
 import png
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import pandas as pd
 import numpy as np
 
@@ -21,7 +21,7 @@ Taken from http://wiki.openstreetmap.org/wiki/Tilenames#Lon..2Flat._to_tile_numb
 
 
 def deg2num(lat_deg, lon_deg, zoom):
-    tileSize = 256;
+    tileSize = 256
     lat_rad = math.radians(lat_deg)
     n = 2.0 ** zoom
     xtilef = (lon_deg + 180.0) / 360.0 * n
@@ -81,7 +81,7 @@ def getTimeSeries(lat, lon, beginDate, endDate):
     ts = []
     for d in datelist:
         url = getTileURL(xtile, ytile, zoom, d)
-        print url
+        print(url)
         pixel_val = getImage(url, ypixel, xpixel)
         snow_val = pixelValueToSnowPercent(pixel_val, d)
         if snow_val is None:
@@ -91,7 +91,7 @@ def getTimeSeries(lat, lon, beginDate, endDate):
 
 
 def getImage(url, rowpixel, colpixel):
-    r = png.Reader(file=urllib2.urlopen(url))
+    r = png.Reader(file=urllib.request.urlopen(url))
     w, h, pixels, metadata = r.read()
     pxlist = list(pixels)
     return pxlist[rowpixel][colpixel]

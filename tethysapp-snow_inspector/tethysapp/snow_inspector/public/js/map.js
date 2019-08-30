@@ -297,6 +297,7 @@ $(document).ready(function () {
 
 
 	function createModisLayer () {
+		console.log("creating layer");
 	    $("#zoom1").val(8);
 	    $("#layer1").val("MODIS_Terra_NDSI_Snow_Cover");
 	    $("#level1").val("8");
@@ -322,12 +323,14 @@ $(document).ready(function () {
               tileSize: 512
             }),
             wrapX: false
-	    });
+			});
+			console.log();
 	    return new ol.layer.Tile({source: modis});
 	}
 
 
 	function updateModisLayer() {
+		console.log("updating layer");
 		var modisDate1 = $("#endDate").val();
 		console.log(typeof modisDate1 + " " + modisDate1);
 
